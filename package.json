@@ -4,7 +4,7 @@
   "description": "Webpack loader that converts {module:path/to.namedExportType} and {module:path/to/DefaultExportType} style JSDoc types to Closure Compiler imported types ",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "eslint index.js test/ && mocha"
   },
   "author": "Andreas Hocevar",
   "license": "MIT",
