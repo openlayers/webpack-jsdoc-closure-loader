@@ -8,7 +8,6 @@ describe('webpack-jsdoc-closure-loader', function() {
       '/** @module module2/types */\n' +
       '/** @type {module:module1/Bar} */\n';
     const context = {
-      context: './test/module2/',
       resourcePath: './test/module2/types.js'
     };
     const got = loader.call(context, source);
@@ -24,7 +23,6 @@ describe('webpack-jsdoc-closure-loader', function() {
       '/** @module module2/types */\n' +
       '/** @type {module:types.foo} */\n';
     const context = {
-      context: './test/module2/',
       resourcePath: './test/module2/types.js'
     };
     const got = loader.call(context, source);
@@ -40,7 +38,6 @@ describe('webpack-jsdoc-closure-loader', function() {
       '/** @module module2/types */\n' +
       '/** @type {module:module1/Bar} */\n';
     const context = {
-      context: './test/module2/types/',
       resourcePath: './test/module2/types/index.js'
     };
     const got = loader.call(context, source);
@@ -56,7 +53,6 @@ describe('webpack-jsdoc-closure-loader', function() {
       '/** @module module2/types */\n' +
       '/** @type {module:module1/Bar|string} */\n';
     const context = {
-      context: './test/module2/',
       resourcePath: './test/module2/types.js'
     };
     const got = loader.call(context, source);
@@ -72,7 +68,6 @@ describe('webpack-jsdoc-closure-loader', function() {
       '/** @module module2/types */\n' +
       '/** @type {Object<string, module:module1/Bar>} */\n';
     const context = {
-      context: './test/module2/',
       resourcePath: './test/module2/types.js'
     };
     const got = loader.call(context, source);
@@ -88,7 +83,6 @@ describe('webpack-jsdoc-closure-loader', function() {
       '/** @module module2/types */\n' +
       '/** @param {module:module1/Bar=} */\n';
     const context = {
-      context: './test/module2/',
       resourcePath: './test/module2/types.js'
     };
     const got = loader.call(context, source);
@@ -104,7 +98,6 @@ describe('webpack-jsdoc-closure-loader', function() {
       '/** @module module2/types */\n' +
       '/** @param {!module:module1/Bar} */\n';
     const context = {
-      context: './test/module2/',
       resourcePath: './test/module2/types.js'
     };
     const got = loader.call(context, source);
@@ -120,7 +113,6 @@ describe('webpack-jsdoc-closure-loader', function() {
       '/** @module module2/types */\n' +
       '/** @type {module:types.type1} */\n';
     const context = {
-      context: './test/module2/',
       resourcePath: './test/module2/types.js'
     };
     const got = loader.call(context, source);

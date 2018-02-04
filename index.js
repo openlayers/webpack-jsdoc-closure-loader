@@ -2,7 +2,7 @@ const parse = require('comment-parser');
 const path = require('path');
 const fs = require('fs');
 
-let imports, levelsUp, context;
+let imports, levelsUp, resourceDir;
 
 function parseModules(type) {
   return type.match(/module\:[^ \|\}\>,=\n]+/g);
@@ -21,7 +21,7 @@ function formatImport(type) {
   const typePath = (up || './') + (pathParts.length > 0 ? pathParts.join('/') + '/' : '');
 
   function resolveTypedef() {
-    const typedefFile = require.resolve(path.resolve(context, `${typePath}${namedParts[0]}`));
+    const typedefFile = require.resolve(path.resolve(resourceDir, `${typePath}${namedParts[0]}`));
     const definedIn = fs.readFileSync(typedefFile, {encoding: 'utf-8'});
     const lines = definedIn.split('\n');
     const comments = parse(definedIn);
@@ -80,7 +80,7 @@ function getTypedefName(lines, tag) {
 
 
 module.exports = function(source) {
-  context = this.context;
+  resourceDir = path.dirname(this.resourcePath);
   imports = {};
   levelsUp = 0;
   let lines, modified;
