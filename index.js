@@ -122,6 +122,6 @@ module.exports = function(source) {
     });
     source = lines.join('\n');
   } while (modified);
-  source += '\n' + Object.keys(imports).join('\n');
-  return source;
+  lines[0] = Object.keys(imports).join(' ') + lines[0];
+  return lines.join('\n');
 };

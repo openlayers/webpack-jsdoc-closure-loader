@@ -101,12 +101,11 @@ function foo(bar) {}
 The bundler will get something like
 
 ```js
+const foo$Bar = require('./foo/Bar');
 /**
  * @param {foo$Bar} bar Bar.
  */
 function foo(bar) {}
-
-const foo$Bar = require('./foo/Bar');
 ```
 
 With this, the type definition is made available to the module that uses the type.

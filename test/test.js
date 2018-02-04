@@ -12,9 +12,9 @@ describe('webpack-jsdoc-closure-loader', function() {
     };
     const got = loader.call(context, source);
     const expected =
+      'const module1$Bar = require(\'../module1/Bar\');' +
       '/** @module module2/types */\n' +
-      '/** @type {module1$Bar} */\n\n' +
-      'const module1$Bar = require(\'../module1/Bar\');';
+      '/** @type {module1$Bar} */\n';
     assert.equal(got, expected);
   });
 
@@ -27,9 +27,9 @@ describe('webpack-jsdoc-closure-loader', function() {
     };
     const got = loader.call(context, source);
     const expected =
+      'const _types_foo = require(\'../types\').foo;' +
       '/** @module module2/types */\n' +
-      '/** @type {_types_foo} */\n\n' +
-      'const _types_foo = require(\'../types\').foo;';
+      '/** @type {_types_foo} */\n';
     assert.equal(got, expected);
   });
 
@@ -42,9 +42,9 @@ describe('webpack-jsdoc-closure-loader', function() {
     };
     const got = loader.call(context, source);
     const expected =
+      'const module1$Bar = require(\'../../module1/Bar\');' +
       '/** @module module2/types */\n' +
-      '/** @type {module1$Bar} */\n\n' +
-      'const module1$Bar = require(\'../../module1/Bar\');';
+      '/** @type {module1$Bar} */\n';
     assert.equal(got, expected);
   });
 
@@ -57,9 +57,9 @@ describe('webpack-jsdoc-closure-loader', function() {
     };
     const got = loader.call(context, source);
     const expected =
+      'const module1$Bar = require(\'../module1/Bar\');' +
       '/** @module module2/types */\n' +
-      '/** @type {module1$Bar|string} */\n\n' +
-      'const module1$Bar = require(\'../module1/Bar\');';
+      '/** @type {module1$Bar|string} */\n';
     assert.equal(got, expected);
   });
 
@@ -72,9 +72,9 @@ describe('webpack-jsdoc-closure-loader', function() {
     };
     const got = loader.call(context, source);
     const expected =
+      'const module1$Bar = require(\'../module1/Bar\');' +
       '/** @module module2/types */\n' +
-      '/** @type {Object<string, module1$Bar>} */\n\n' +
-      'const module1$Bar = require(\'../module1/Bar\');';
+      '/** @type {Object<string, module1$Bar>} */\n';
     assert.equal(got, expected);
   });
 
@@ -87,9 +87,9 @@ describe('webpack-jsdoc-closure-loader', function() {
     };
     const got = loader.call(context, source);
     const expected =
+      'const module1$Bar = require(\'../module1/Bar\');' +
       '/** @module module2/types */\n' +
-      '/** @param {module1$Bar=} */\n\n' +
-      'const module1$Bar = require(\'../module1/Bar\');';
+      '/** @param {module1$Bar=} */\n';
     assert.equal(got, expected);
   });
 
@@ -102,9 +102,9 @@ describe('webpack-jsdoc-closure-loader', function() {
     };
     const got = loader.call(context, source);
     const expected =
+      'const module1$Bar = require(\'../module1/Bar\');' +
       '/** @module module2/types */\n' +
-      '/** @param {!module1$Bar} */\n\n' +
-      'const module1$Bar = require(\'../module1/Bar\');';
+      '/** @param {!module1$Bar} */\n';
     assert.equal(got, expected);
   });
 
@@ -118,7 +118,7 @@ describe('webpack-jsdoc-closure-loader', function() {
     const got = loader.call(context, source);
     const expected =
       '/** @module module2/types */\n' +
-      '/** @type {{ foo: string, bar: Array<number> }} */\n\n';
+      '/** @type {{ foo: string, bar: Array<number> }} */\n';
     assert.equal(got, expected);
   });
 
