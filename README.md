@@ -109,3 +109,30 @@ function foo(bar) {}
 ```
 
 With this, the type definition is made available to the module that uses the type.
+
+### Locally repeat `@enum`s
+
+Closure Compiler does not recognize imported enums, so these are repeated locally. If module `types` specifies
+
+```js
+/** @enum {number} */
+export const Foo = {
+  BAR: 1,
+  BAZ: 2
+};
+```
+
+and another module uses
+
+```js
+/** @type {module:types.Foo} */
+const foo;
+```
+
+the bundler will get something like
+
+```js
+/** @enum {number} */ const _types_Foo = { BAR: 1, BAZ: 2 };
+/** @type {_types_Foo} */
+const foo;
+```

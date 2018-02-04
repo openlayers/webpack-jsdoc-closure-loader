@@ -122,4 +122,19 @@ describe('webpack-jsdoc-closure-loader', function() {
     assert.equal(got, expected);
   });
 
+  it('repeats enums locally', function() {
+    const source =
+      '/** @module module2/types */\n' +
+      '/** @type {module:types.type3} */\n';
+    const context = {
+      resourcePath: './test/module2/types.js'
+    };
+    const got = loader.call(context, source);
+    const expected =
+      '/** @enum {number} */ const _types_type3 = { FOO: 1, BAR: 2 };' +
+      '/** @module module2/types */\n' +
+      '/** @type {_types_type3} */\n';
+    assert.equal(got, expected);
+  });
+
 });

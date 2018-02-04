@@ -20,31 +20,37 @@ function formatImport(type) {
   }
   const typePath = (up || './') + (pathParts.length > 0 ? pathParts.join('/') + '/' : '');
 
-  function resolveTypedef() {
+  function loadForeignType() {
     const typedefFile = require.resolve(path.resolve(resourceDir, `${typePath}${namedParts[0]}`));
     const definedIn = fs.readFileSync(typedefFile, {encoding: 'utf-8'});
     const lines = definedIn.split('\n');
     const comments = parse(definedIn);
-    let typedef, modulePath;
+    let enumeration, typedef, modulePath;
     comments.forEach(comment => {
       comment.tags.forEach(tag => {
         if (tag.tag == 'module') {
           modulePath = tag.name;
-        } else if (tag.tag == 'typedef') {
-          const name = getTypedefName(lines, tag);
+        } else if (tag.tag == 'typedef' || tag.tag == 'enum') {
+          const name = getName(lines, tag);
           if (moduleType == `module:${modulePath}.${name}`) {
-            typedef = [moduleType, tag.type.split('\n').join(' ').trim()];
+            if (tag.tag == 'typedef') {
+              typedef = [moduleType, tag.type.split('\n').join(' ').trim()];
+            } else if (tag.tag == 'enum') {
+              enumeration = getEnum(lines, tag.line).replace(name, '${name}');
+            }
           }
         }
       });
     });
-    return typedef;
+    return [enumeration, typedef];
   }
 
   if (namedParts.length > 1) {
-    const typedef = resolveTypedef();
+    const [enumeration, typedef] = loadForeignType();
     if (typedef) {
       return typedef;
+    } else if (enumeration) {
+      return enumeration.replace('${name}', formatType(type));
     } else {
       return `const ${formatType(type)} = require('${typePath}${namedParts[0]}').${namedParts[1]};`;
     }
@@ -65,19 +71,33 @@ function formatType(type) {
   }
 }
 
-function getTypedefName(lines, tag) {
+function getName(lines, tag) {
   let name = tag.name;
   if (!name) {
     let i = tag.line;
     while (lines[i].indexOf('*/') == -1) {
       ++i;
     }
-    const match = lines[i + 1].match(/(let|var) ([^;]+)/);
+    const match = lines[i + 1].match(/(let|var|const) ([^; ]+)/);
     name = match[2];
   }
   return name;
 }
 
+function getEnum(lines, i) {
+  while (lines[i].indexOf('/**') == -1) {
+    --i;
+  }
+  const enumeration = [lines[i].substr(lines[i].indexOf('/**'))];
+  let line;
+  while (lines[i].indexOf('};') == -1) {
+    ++i;
+    line = lines[i].trim();
+    enumeration.push(line);
+  }
+  enumeration[enumeration.length - 1] = line.substr(0, line.indexOf('};') + 2);
+  return enumeration.join(' ');
+}
 
 module.exports = function(source) {
   resourceDir = path.dirname(this.resourcePath);
@@ -100,6 +120,7 @@ module.exports = function(source) {
             parseModules(tag.type).forEach(type => {
               const importLine = formatImport(type);
               if (Array.isArray(importLine)) {
+                // typedef
                 let i = tag.line;
                 do {
                   lines[i] = lines[i].replace(importLine[0], importLine[1]);
