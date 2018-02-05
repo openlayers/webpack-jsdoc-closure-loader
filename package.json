@@ -6,7 +6,7 @@
   "scripts": {
     "test": "eslint index.js test/ && mocha"
   },
-  "author": "Andreas Hocevar",
+  "author": "OpenLayers Contributors",
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
