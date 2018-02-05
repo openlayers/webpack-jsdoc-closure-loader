@@ -132,7 +132,10 @@ const foo;
 the bundler will get something like
 
 ```js
-/** @enum {number} */ const _types_Foo = { BAR: 1, BAZ: 2 };
+/** @enum {number} */ let _types_Foo = { BAR: 1, BAZ: 2 };
+_types_Foo = require('./types').Foo;
 /** @type {_types_Foo} */
 const foo;
 ```
+
+Repeating the enum locally and in addition requiring it helps the copiler understand the enum in cases where it is also imported locally by the source.

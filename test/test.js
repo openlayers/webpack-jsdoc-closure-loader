@@ -131,7 +131,8 @@ describe('webpack-jsdoc-closure-loader', function() {
     };
     const got = loader.call(context, source);
     const expected =
-      '/** @enum {number} */ const _types_type3 = { FOO: 1, BAR: 2 };' +
+      '/** @enum {number} */ let _types_type3 = { FOO: 1, BAR: 2 }; ' +
+      '_types_type3 = require(\'../types\').type3;' +
       '/** @module module2/types */\n' +
       '/** @type {_types_type3} */\n';
     assert.equal(got, expected);

@@ -25,7 +25,7 @@ function formatImport(type) {
     const definedIn = fs.readFileSync(typedefFile, {encoding: 'utf-8'});
     const lines = definedIn.split('\n');
     const comments = parse(definedIn);
-    let enumeration, typedef, modulePath;
+    let enumdef, typedef, modulePath;
     comments.forEach(comment => {
       comment.tags.forEach(tag => {
         if (tag.tag == 'module') {
@@ -36,21 +36,21 @@ function formatImport(type) {
             if (tag.tag == 'typedef') {
               typedef = [moduleType, tag.type.split('\n').join(' ').trim()];
             } else if (tag.tag == 'enum') {
-              enumeration = getEnum(lines, tag.line).replace(name, '${name}');
+              enumdef = getEnum(lines, tag.line);
             }
           }
         }
       });
     });
-    return [enumeration, typedef];
+    return [enumdef, typedef];
   }
 
   if (namedParts.length > 1) {
-    const [enumeration, typedef] = loadForeignType();
+    const [enumdef, typedef] = loadForeignType();
     if (typedef) {
       return typedef;
-    } else if (enumeration) {
-      return enumeration.replace('${name}', formatType(type));
+    } else if (enumdef) {
+      return `${enumdef.replace('${name}', formatType(type))}; ${formatType(type)} = require('${typePath}${namedParts[0]}').${namedParts[1]};`;
     } else {
       return `const ${formatType(type)} = require('${typePath}${namedParts[0]}').${namedParts[1]};`;
     }
@@ -88,15 +88,21 @@ function getEnum(lines, i) {
   while (lines[i].indexOf('/**') == -1) {
     --i;
   }
-  const enumeration = [lines[i].substr(lines[i].indexOf('/**'))];
-  let line;
-  while (lines[i].indexOf('};') == -1) {
+  const comment = [lines[i].substr(lines[i].indexOf('/**'))];
+  let line = lines[i].trim();
+  while (lines[i].indexOf('*/') == -1) {
     ++i;
     line = lines[i].trim();
-    enumeration.push(line);
+    comment.push(line);
   }
-  enumeration[enumeration.length - 1] = line.substr(0, line.indexOf('};') + 2);
-  return enumeration.join(' ');
+  comment[comment.length - 1] = line.substr(0, line.indexOf('*/') + 2);
+  const definition = [line.substr(line.indexOf('*/'))];
+  let match;
+  while (!(match = definition.join(' ').match(/\{([\S\s]*)\}/))) {
+    ++i;
+    definition.push(lines[i].trim());
+  }
+  return comment.join(' ') + ` let \${name} = {${match[1]}}`;
 }
 
 module.exports = function(source) {
